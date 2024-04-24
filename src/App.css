@@ -1,0 +1,6 @@
+
+    .borderlessTextField {
+        border: none !important;
+        color: white;
+        width: 100%;
+    }
