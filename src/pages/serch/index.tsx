@@ -78,14 +78,12 @@ const Search = () => {
               />
 
               <Box display={"flex"} flexDirection={"column"}>
-                <Typography fontSize={12} color={'grey'}>{user.fullname}</Typography>
-                <Typography fontSize={12}> @{user.username}</Typography>
+                <Typography fontSize={12}>{user.fullname}</Typography>
+                <Typography fontSize={12}>{user.username}</Typography>
                 <Typography fontSize={12}>{user.profile?.bio}</Typography>
               </Box>
             </Box>
-            <Box width={"20%"}>
            <ButtonFollow followingId={user.id as number} />
-           </Box>
           </Box>
         ))}
       </ul>

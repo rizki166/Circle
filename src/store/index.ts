@@ -1,11 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import authReducer from "./slice/auth";
+import thread from "./slice/thread";
+import follow from "./slice/follow";
+// import { followSlice } from "./slice/follow";
 
 export const store = configureStore({
-   reducer: {
-      auth: authReducer,
-   },
+  reducer: {
+    auth: authReducer,
+    thread: thread,
+    follow: follow,
+  },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

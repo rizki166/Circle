@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Avatar } from "@mui/material";
 import { createThread } from "../../lib/api/call/thread";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { GoFileMedia } from "react-icons/go";
+import { getThreadsAsync } from "../../store/async/thread";
 
 interface IThreadPostProps {
     threadId?: number;
@@ -13,7 +14,7 @@ interface IThreadPostProps {
 
 const ThreadPost: React.FC<IThreadPostProps> = ({ threadId, onCreateThread }) => {
     const profile = useAppSelector(state => state.auth.user);
-
+    const dispatch = useAppDispatch();
     const [threadPost, setThreadPost] = useState<{
         content: string;
         image: FileList | null;
@@ -32,7 +33,7 @@ const ThreadPost: React.FC<IThreadPostProps> = ({ threadId, onCreateThread }) =>
 
             await createThread(threadPost);
 
-            // Setelah thread berhasil dibuat, panggil fungsi onCreateThread untuk memperbarui data
+            dispatch(getThreadsAsync());
             onCreateThread();
 
             setThreadPost({ content: "", image: null });
@@ -42,36 +43,40 @@ const ThreadPost: React.FC<IThreadPostProps> = ({ threadId, onCreateThread }) =>
     };
 
     return (
-        <Box sx={{borderBottom:"1px solid gray"}}>
+        <Box sx={{ borderBottom: "1px solid gray" }}>
             <Box
                 my={5}
-                width={"100%"}
+                
                 sx={{
                     display: "flex",
                     alignItems: "center",
-                    width: "100%",
+                    width: "95%",
                     gap: 2,
-                    ml: 3,
+                    mr: 1,
+                    ml: 1,
                     mb: 1,
                 }}
             >
-                   <Avatar src={`http://localhost:5000/uploads/${profile?.avatar}`}
-            sx={{ height: '50px', width: '50px' }} />
+                <Avatar src={`http://localhost:5000/uploads/${profile?.avatar}`}
+                    sx={{ height: '50px', width: '50px' }} />
                 <TextField
                     fullWidth
                     variant="standard"
                     autoComplete="off"
                     value={threadPost.content}
-                    sx={{ color: "white" ,width:"60%"}}
                     id="outlined-multiline-static"
                     placeholder="What's on your mind?"
-                    color="success"
                     onChange={(e) =>
                         setThreadPost({ ...threadPost, content: e.target.value })
                     }
+                    InputProps={{
+                        sx: { color: "white" },
+                        style: { width: "100%" }
+                    }}
                 />
+
                 <label htmlFor="contained-button-file">
-                <GoFileMedia /> {threadPost.image?.length}
+                    <GoFileMedia /> {threadPost.image?.length}
                 </label>
                 <input
                     accept="image/*"
@@ -87,7 +92,7 @@ const ThreadPost: React.FC<IThreadPostProps> = ({ threadId, onCreateThread }) =>
                 <Button
                     onClick={handlePostThread}
                     variant="contained"
-                    sx={{ backgroundColor: "lime", borderRadius: "20px" }}
+                    sx={{ backgroundColor: "lime", borderRadius: "20px" ,height:"30px" }}
                 >
                     Post
                 </Button>

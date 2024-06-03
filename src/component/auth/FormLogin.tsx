@@ -1,13 +1,13 @@
 import { Box, TextField, Typography } from '@mui/material'
-import { Link } from "react-router-dom";
-import { loginApi } from "../../lib/api/call/user";
-import { getProfile } from "../../lib/api/call/profile";
-import { useAppDispatch } from "../../store";
-import { SET_LOGIN } from "../../store/slice/auth";
+import { Link, useNavigate } from "react-router-dom"; // Mengubah dari Navigate ke useNavigate
+import { useAppDispatch} from "../../store";
 import React, { useState } from 'react';
+import { getProfileAsync, loginAsync } from '../../store/async/auth';
 
 const ModalLogin: React.FC = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate(); // Mengubah dari Navigate ke useNavigate
+
     const [formInput, setFormInput] = useState<{
         username: string;
         password: string;
@@ -19,15 +19,13 @@ const ModalLogin: React.FC = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await loginApi(formInput);
-            const token = res.data.token;
-            const resProfile = await getProfile(token);
-            localStorage.setItem("token", token);
-            dispatch(SET_LOGIN({ user: resProfile.data.data, token }));
-          
-            window.location.href = "/"; 
+            const token = (await dispatch(loginAsync(formInput))).payload;
+            await dispatch(getProfileAsync(token));
+            navigate('/'); 
         } catch (error) {
             window.alert("Invalid username or password");
+            alert(error);
+            
         }
     };
 
@@ -77,8 +75,6 @@ const ModalLogin: React.FC = () => {
                             backgroundColor: 'white', border: '1px solid grey',
                             borderRadius: '5px',
                             mt: 2,
-                            
-                            
                         }}
 
                     />
